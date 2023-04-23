@@ -21,7 +21,6 @@ players = [Player(0, 0, 25, 25, (0, 255, 0)), Player(200, 200, 25, 25, (0, 0, 25
 
 def threaded_client(conn, player):
     conn.send(pickle.dumps(players[player]))
-    # reply = ""
     while True:
         try:
             data = pickle.loads(conn.recv(2048))
