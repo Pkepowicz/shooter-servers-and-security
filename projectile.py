@@ -5,8 +5,10 @@ MAX_RANGE = 200
 SPEED = 5
 DAMAGE = 10
 
+
 class Projectile:
     def __init__(self, x, y, angle):
+        self.id = None
         self.x = x
         self.y = y
         self.speed = SPEED
@@ -15,6 +17,7 @@ class Projectile:
         self.damage = DAMAGE
         self.distance = 0
         self.active = True
+        self.known = 1
 
     def draw(self, win):
         pygame.draw.circle(win, (0, 255, 0), (self.x, self.y), 3)

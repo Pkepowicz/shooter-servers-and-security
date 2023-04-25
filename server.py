@@ -1,54 +1,93 @@
 import socket
-from _thread import *
+from threading import Thread
 from player import Player
 import pickle
-
-server = "127.0.1.1"
-port = 5555
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-try:
-    s.bind((server, port))
-except socket.error as e:
-    str(e)
-
-s.listen(2)
-print("Waiting for a connection, Server Started")
-
-players = [Player(0, 0, 25, 25, (0, 255, 0)), Player(200, 200, 25, 25, (0, 0, 255))]
+from game import Game
+from projectile import Projectile
 
 
-def threaded_client(conn, player):
-    conn.send(pickle.dumps(players[player]))
-    while True:
+class Server:
+    def __init__(self):
+        self.games = []
+        self.server_ip_address = "127.0.1.1"
+        self.port = 5555
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        if self.bind_socket():
+            self.run_server()
+
+    def bind_socket(self):
         try:
-            data = pickle.loads(conn.recv(2048))
-            players[player] = data
+            self.socket.bind((self.server_ip_address, self.port))
+            return True
+        except socket.error as e:
+            print(e)
+            return False
 
-            if not data:
-                print("disconnected")
+    def run_server(self):
+        self.socket.listen(2)
+        print("Server started")
+        while True:
+            try:
+                connection, address = self.socket.accept()
+                thread = Thread(target=self.threaded_client, args=(connection, address))
+                thread.start()
+            except KeyboardInterrupt:
                 break
-            else:
-                if player == 1:
-                    reply = players[0]
+        self.socket.close()
+
+    def threaded_client(self, connection, address):
+        print("Connected to: ", address)
+
+        game = self.add_client_to_game(address)
+        self.send_client_setup_response(connection, game)
+        self.game_loop(address, connection, game)
+        if game in self.games and not game.players:
+            self.games.remove(game)
+        print("Disconnected: ", address)
+        connection.close()
+
+    def add_client_to_game(self, address):
+        game = self.get_game_instance()
+        game.join_new_player()
+        return game
+
+    def get_game_instance(self):
+        for game in self.games:
+            if game.can_player_join():
+                return game
+        return self.create_new_game()
+
+    def create_new_game(self):
+        new_game = Game(len(self.games), 2)
+        self.games.append(new_game)
+        return new_game
+
+    def send_client_setup_response(self, connection, game):
+        connection.send(pickle.dumps(game.get_last_player_joined()))
+
+    def game_loop(self, address, connection, game):
+        while True:
+            try:
+                if received := pickle.loads(connection.recv(2048)):
+                    print(f'Game: {game.id}, received data: {received} from {address}')
+                    self.process_and_response(game, received, connection)
                 else:
-                    reply = players[1]
+                    break
+            except (EOFError, ConnectionError) as e:
+                print(str(e))
+                break
 
-                print("Received: ", data)
-                print("Sending: ", reply)
+    def process_and_response(self, game, received, connection):
+        if isinstance(received, Player):
+            game.update_player(received)
+            if game.players:
+                other_players = game.get_other_players(received)
+                projectiles = game.get_other_projectiles()
+                connection.sendall(pickle.dumps((other_players, projectiles)))
+            else:
+                pass
+        elif isinstance(received, Projectile):
+            game.update_projectiles(received)
 
-            conn.sendall(pickle.dumps(reply))
-        except:
-            break
-    print("Lost connection")
-    conn.close()
 
-
-currentPlayer = 0
-while True:
-    conn, addr = s.accept()
-    print("Connected to:", addr)
-
-    start_new_thread(threaded_client, (conn, currentPlayer))
-    currentPlayer += 1
+server = Server()

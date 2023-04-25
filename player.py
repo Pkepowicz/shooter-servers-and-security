@@ -2,18 +2,18 @@ import pygame
 import math
 from projectile import Projectile
 
+
 class Player:
-    def __init__(self, x, y, width, height, color):
+    def __init__(self, id, x, y, radius, color=(0, 0, 255)):
+        self.id = id
         self.x = x
         self.y = y
-        self.width = width
-        self.height = height
+        self.radius = radius
         self.color = color
-        self.rect = (x, y, width, height)
         self.vel = 3
 
     def draw(self, win):
-        pygame.draw.rect(win, self.color, self.rect)
+        pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
 
     def move(self):
         keys = pygame.key.get_pressed()
@@ -30,15 +30,15 @@ class Player:
         if keys[pygame.K_DOWN]:
             self.y += self.vel
 
-        self.update()
+        # self.update()
 
 
     def update(self):
         self.rect = (self.x, self.y, self.width, self.height)
 
     def shoot(self, mouse_x, mouse_y):
-        x_center = self.x + self.width / 2
-        y_center = self.y + self.height / 2
+        x_center = self.x
+        y_center = self.y
         angle = self.calculate_angle(x_center, y_center, mouse_x, mouse_y)
         return Projectile(x_center, y_center, angle)
 
