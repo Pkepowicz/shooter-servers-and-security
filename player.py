@@ -11,13 +11,13 @@ class Player:
         self.radius = radius
         self.color = color
         self.vel = 3
+        self.alive = True
+        self.health = 100
 
     def draw(self, win):
         pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
 
-    def move(self):
-        keys = pygame.key.get_pressed()
-
+    def update(self, keys):
         if keys[pygame.K_LEFT]:
             self.x -= self.vel
 
@@ -30,17 +30,19 @@ class Player:
         if keys[pygame.K_DOWN]:
             self.y += self.vel
 
-        # self.update()
-
-
-    def update(self):
-        self.rect = (self.x, self.y, self.width, self.height)
-
     def shoot(self, mouse_x, mouse_y):
-        x_center = self.x
-        y_center = self.y
-        angle = self.calculate_angle(x_center, y_center, mouse_x, mouse_y)
-        return Projectile(x_center, y_center, angle)
+        angle = self.calculate_angle(self.x, self.y, mouse_x, mouse_y)
+        x_shifted = self.x + self.radius * 1.5 * math.cos(angle)
+        y_shifted = self.y + self.radius * 1.5 * math.sin(angle)
+        return Projectile(x_shifted, y_shifted, angle)
+
+    def take_damage(self):
+        print('ohno got hit')
+        self.health -= 10
+        if self.health < 1:
+            print('ohno im dead')
+            self.alive = False
+
 
     def calculate_angle(self, x, y, mouse_x, mouse_y):
         # Calculate the angle in radians between the object and the mouse position

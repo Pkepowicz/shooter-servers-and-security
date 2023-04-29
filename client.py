@@ -18,7 +18,7 @@ class Client:
 
     def setup_players(self):
         self.local_player = self.network_client.connect()
-
+        print(self.local_player)
         for i in range(2):
             if i == self.local_player.id:
                 self.players[i] = self.local_player
@@ -27,8 +27,11 @@ class Client:
 
     def redraw_window(self):
         self.window.fill((255, 255, 255))
-        for player in self.players.values():
-            player.draw(self.window)
+        for player in self.players.copy().values():
+            if player.alive:
+                player.draw(self.window)
+            else:
+                del self.players[player.id]
         for projectile in self.projectiles.copy():
             if projectile.active:
                 projectile.draw(self.window)
@@ -36,20 +39,26 @@ class Client:
                 self.projectiles.remove(projectile)
         pygame.display.update()
 
-    def update_players(self):
-        for player in self.players:
-            if player == self.local_player:
-                player.update()
+    def process_player_input(self):
+        if self.local_player.alive:
+            self.local_player.update(pygame.key.get_pressed())
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+            if event.type == pygame.MOUSEBUTTONDOWN and self.local_player.alive:
+                x, y = pygame.mouse.get_pos()
+                if (projectile := self.local_player.shoot(x, y)) is not None:
+                    self.projectiles.add(projectile)
+                    self.network_client.send(projectile)
 
     def update_projectiles(self):
         for projectile in self.projectiles.copy():
             if projectile.active:
                 projectile.update()
+                self.check_for_collision(projectile)
             else:
                 self.projectiles.remove(projectile)
-
-    def process_input(self):
-        self.local_player.move()
 
     def share_data_with_server(self):
         enemies, projectiles = self.network_client.send(self.local_player)
@@ -58,27 +67,28 @@ class Client:
         if projectiles is not None:
             self.projectiles.update(projectiles)
 
+    def check_for_collision(self, projectile):
+        for player in self.players.copy().values():
+            if self.check_circle_overlap((projectile.x, projectile.y), projectile.radius, (player.x, player.y), player.radius):
+                print('hit registered')
+                projectile.active = False
+                if player is self.local_player:
+                    print('sending damage')
+                    player.take_damage()
+
+    def check_circle_overlap(self, pos1, radius1, pos2, radius2):
+        distance_squared = (pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2
+        radi_squared = (radius1 + radius2) ** 2
+        return distance_squared <= radi_squared
+
     def run(self):
         run = True
         clock = pygame.time.Clock()
         while run:
             clock.tick(60)
-            self.update_players()
-            self.update_projectiles()
-            self.process_input()
             self.share_data_with_server()
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    run = False
-                    pygame.quit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    x, y = pygame.mouse.get_pos()
-                    # if mouse_presses[0]:
-                    if (projectile := self.local_player.shoot(x, y)) is not None:
-                        self.projectiles.add(projectile)
-                        self.network_client.send(projectile)
-
+            self.update_projectiles()
+            self.process_player_input()
             self.redraw_window()
 
 

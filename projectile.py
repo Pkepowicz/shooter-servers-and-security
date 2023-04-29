@@ -15,12 +15,13 @@ class Projectile:
         self.change_x = -math.sin(angle - math.pi / 2) * self.speed
         self.change_y = math.cos(angle - math.pi / 2) * self.speed
         self.damage = DAMAGE
+        self.radius = 3
         self.distance = 0
         self.active = True
         self.known = 1
 
     def draw(self, win):
-        pygame.draw.circle(win, (0, 255, 0), (self.x, self.y), 3)
+        pygame.draw.circle(win, (0, 255, 0), (self.x, self.y), self.radius)
 
     def update(self):
         self.x += self.change_x

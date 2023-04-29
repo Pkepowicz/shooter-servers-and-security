@@ -9,7 +9,7 @@ from projectile import Projectile
 class Server:
     def __init__(self):
         self.games = []
-        self.server_ip_address = "127.0.1.1"
+        self.server_ip_address = "127.0.1.1" # "127.0.1.1"
         self.port = 5555
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         if self.bind_socket():
