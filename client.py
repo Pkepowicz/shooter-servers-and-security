@@ -6,10 +6,12 @@ from projectile import Projectile
 
 class Client:
     def __init__(self):
+        pygame.init()
         self.width = 500
         self.height = 500
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Client")
+        self.font = pygame.font.SysFont("Arial", 20)
         self.network_client = Network()
         self.local_player = None
         self.players = {}
@@ -37,6 +39,8 @@ class Client:
                 projectile.draw(self.window)
             else:
                 self.projectiles.remove(projectile)
+        text_surface = self.font.render(str(self.local_player.health), True, (0, 0, 0))
+        self.window.blit(text_surface, (self.width - 40, self.height - 40))
         pygame.display.update()
 
     def process_player_input(self):
