@@ -27,5 +27,14 @@ class Projectile:
         self.x += self.change_x
         self.y += self.change_y
         self.distance += self.speed
+        if not self.check_bounds():
+            self.active = False
         if self.distance > MAX_RANGE:
             self.active = False
+
+    def check_bounds(self):
+        if self.x < 1 or self.x > 499:
+            return False
+        if self.y < 1 or self.y > 499:
+            return False
+        return True

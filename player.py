@@ -19,16 +19,20 @@ class Player:
 
     def update(self, keys):
         if keys[pygame.K_LEFT]:
-            self.x -= self.vel
+            if self.x > 1:
+                self.x -= self.vel
 
         if keys[pygame.K_RIGHT]:
-            self.x += self.vel
+            if self.x < 499:
+                self.x += self.vel
 
         if keys[pygame.K_UP]:
-            self.y -= self.vel
+            if self.y > 1:
+                self.y -= self.vel
 
         if keys[pygame.K_DOWN]:
-            self.y += self.vel
+            if self.y < 499:
+                self.y += self.vel
 
     def shoot(self, mouse_x, mouse_y):
         angle = self.calculate_angle(self.x, self.y, mouse_x, mouse_y)

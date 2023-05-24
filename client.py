@@ -1,7 +1,6 @@
 import pygame
 from network import Network
 from player import Player
-from projectile import Projectile
 
 
 class Client:
@@ -54,7 +53,7 @@ class Client:
                 x, y = pygame.mouse.get_pos()
                 if (projectile := self.local_player.shoot(x, y)) is not None:
                     self.projectiles.add(projectile)
-                    self.network_client.send(projectile)
+                    self.network_client.send_projectile(projectile)
 
     def update_projectiles(self):
         for projectile in self.projectiles.copy():
@@ -65,7 +64,7 @@ class Client:
                 self.projectiles.remove(projectile)
 
     def share_data_with_server(self):
-        enemies, projectiles = self.network_client.send(self.local_player)
+        enemies, projectiles = self.network_client.send_player(self.local_player)
         if enemies is not None:
             self.players.update({enemy.id: enemy for enemy in enemies})
         if projectiles is not None:

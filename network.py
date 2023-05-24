@@ -2,7 +2,6 @@ import socket
 import pickle
 from player import Player
 from projectile import Projectile
-from functools import singledispatchmethod
 
 
 class Network:
@@ -21,12 +20,7 @@ class Network:
         except socket.error as e:
             raise e
 
-    @singledispatchmethod
-    def send(self, game_object):
-        pass
-
-    @send.register
-    def _(self, game_object: Player):
+    def send_player(self, game_object: Player):
         try:
             self.socket.send(pickle.dumps(game_object))
             try:
@@ -36,8 +30,7 @@ class Network:
         except socket.error as se:
             print(se)
 
-    @send.register
-    def _(self, game_object: Projectile):
+    def send_projectile(self, game_object: Projectile):
         try:
             self.socket.send(pickle.dumps(game_object))
         except socket.error as se:
