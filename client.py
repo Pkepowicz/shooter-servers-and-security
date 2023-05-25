@@ -16,6 +16,9 @@ class Client:
         self.players = {}
         self.projectiles = set()
         self.setup_players()
+        self.background = pygame.image.load("assets/background.jpg")
+        self.player_sprite = pygame.transform.scale(pygame.image.load("assets/player.png"), (50, 50))
+        self.projectile_sprite = pygame.transform.scale(pygame.image.load("assets/projectile.png"), (14, 14))
 
     def setup_players(self):
         self.local_player = self.network_client.connect()
@@ -27,15 +30,15 @@ class Client:
                 self.players[i] = Player(i, 25, 25, 20)
 
     def redraw_window(self):
-        self.window.fill((255, 255, 255))
+        self.window.blit(self.background, (0,0))
         for player in self.players.copy().values():
             if player.alive:
-                player.draw(self.window)
+                player.draw(self.window, self.player_sprite)
             else:
                 del self.players[player.id]
         for projectile in self.projectiles.copy():
             if projectile.active:
-                projectile.draw(self.window)
+                projectile.draw(self.window, self.projectile_sprite)
             else:
                 self.projectiles.remove(projectile)
         text_surface = self.font.render(str(self.local_player.health), True, (0, 0, 0))

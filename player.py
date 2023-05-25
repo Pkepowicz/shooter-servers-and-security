@@ -14,8 +14,8 @@ class Player:
         self.alive = True
         self.health = 100
 
-    def draw(self, win):
-        pygame.draw.circle(win, self.color, (self.x, self.y), self.radius)
+    def draw(self, win, sprite):
+        win.blit(sprite, (self.x-25, self.y-25))
 
     def update(self, keys):
         if keys[pygame.K_LEFT]:
