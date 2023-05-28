@@ -4,6 +4,7 @@ from player import Player
 import pickle
 from game import Game
 from projectile import Projectile
+from encryptor import Encryptor
 
 
 class Server:
@@ -12,6 +13,10 @@ class Server:
         self.server_ip_address = "127.0.1.1" # "127.0.1.1"
         self.port = 5555
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        self.encryptor = Encryptor("mypassword")
+        self.encrypted = True
+
         if self.bind_socket():
             self.run_server()
 
@@ -63,12 +68,15 @@ class Server:
         return new_game
 
     def send_client_setup_response(self, connection, game):
-        connection.send(pickle.dumps(game.get_last_player_joined()))
+        if self.encrypted:
+            connection.send(self.encryptor.encrypt(pickle.dumps(game.get_last_player_joined())))
+        else:
+            connection.send(pickle.dumps(game.get_last_player_joined()))
 
     def game_loop(self, address, connection, game):
         while True:
             try:
-                if received := pickle.loads(connection.recv(2048)):
+                if received := pickle.loads((connection.recv(2048) if not self.encrypted else self.encryptor.decrypt(connection.recv(2048)))):
                     print(f'Game: {game.id}, received data: {received} from {address}')
                     self.process_and_response(game, received, connection)
                 else:
@@ -83,7 +91,10 @@ class Server:
             if game.players:
                 other_players = game.get_other_players(received)
                 projectiles = game.get_other_projectiles()
-                connection.sendall(pickle.dumps((other_players, projectiles)))
+                if self.encrypted:
+                    connection.sendall(self.encryptor.encrypt(pickle.dumps((other_players, projectiles))))
+                else:
+                    connection.sendall(pickle.dumps((other_players, projectiles)))
             else:
                 pass
         elif isinstance(received, Projectile):

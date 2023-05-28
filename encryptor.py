@@ -12,10 +12,11 @@ class Encryptor:
             password = self.password
 
         salt = b'DRw\xaaj_\xfb\xca\xec\x91\xcd \xd9xk\x88\xe0\xbd\x97\xcab-\xe9\xa7D ^\xee\x93\xac\x92\x1f'
-        key = PBKDF2(password, salt, dkLen=32, count=1000000)
+        key = PBKDF2(password, salt, dkLen=32)
         
         cipher = AES.new(key, AES.MODE_CBC)
-        ciphered_data = cipher.encrypt(pad(data, AES.block_size))
+        ciphered_data = cipher.iv
+        ciphered_data = bytes(ciphered_data) + cipher.encrypt(pad(data, AES.block_size))
 
         return ciphered_data
 
@@ -24,10 +25,11 @@ class Encryptor:
             password = self.password
 
         salt = b'DRw\xaaj_\xfb\xca\xec\x91\xcd \xd9xk\x88\xe0\xbd\x97\xcab-\xe9\xa7D ^\xee\x93\xac\x92\x1f'
-        key = PBKDF2(password, salt, dkLen=32, count=1000000)
+        key = PBKDF2(password, salt, dkLen=32)
 
-        cipher = AES.new(key, AES.MODE_CBC)
-        original_data = unpad(cipher.decrypt(ciphered_data), AES.block_size)
+        iv = ciphered_data[0:16]
+        cipher = AES.new(key, AES.MODE_CBC, iv=iv)
+        original_data = unpad(cipher.decrypt(ciphered_data[16:]), AES.block_size)
         return original_data
 
 
