@@ -1,6 +1,7 @@
 import pygame
 from network import Network
 from player import Player
+from button import Button
 
 
 class Client:
@@ -11,11 +12,10 @@ class Client:
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Client")
         self.font = pygame.font.SysFont("Arial", 20)
-        self.network_client = Network()
+        self.network_client = None
         self.local_player = None
         self.players = {}
         self.projectiles = set()
-        self.setup_players()
         self.background = pygame.image.load("assets/background.jpg")
         self.player_sprite = pygame.transform.scale(pygame.image.load("assets/player.png"), (50, 50))
         self.projectile_sprite = pygame.transform.scale(pygame.image.load("assets/projectile.png"), (14, 14))
@@ -87,6 +87,29 @@ class Client:
         radi_squared = (radius1 + radius2) ** 2
         return distance_squared <= radi_squared
 
+    def main_menu(self):
+        while True:
+            self.window.fill((0, 0, 0))
+            mouse_pos = pygame.mouse.get_pos()
+
+            play_button = Button(pos=(self.width/2, self.height/2),
+                                 text_input="PLAY", font=self.font, base_color="#ffffff",
+                                 hovering_color="Light Green")
+
+            play_button.change_color(mouse_pos)
+            play_button.update(self.window)
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if play_button.check_for_input(mouse_pos):
+                        self.network_client = Network()
+                        self.setup_players()
+                        self.run()
+
+            pygame.display.update()
+
     def run(self):
         run = True
         clock = pygame.time.Clock()
@@ -99,4 +122,8 @@ class Client:
 
 
 client = Client()
-client.run()
+client.main_menu()
+
+
+
+
