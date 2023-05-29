@@ -1,1 +1,2 @@
-pygame~=2.3.0
+pycryptodome==3.18.0
+pygame==2.3.0
