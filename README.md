@@ -1,5 +1,6 @@
 # Shooters, servers and security
-
+[Wykorzystane grafiki](https://thomasgvd.itch.io/top-down-shooter)  
+[Wykorzystane tło](https://openverse.org/image/4973b527-1670-4f61-a045-af94de18c022?q=grass)
 ## Zad 1
 Napisz metodę send_projectile, która przyjmuję obiekt klasy Projectile i przesyła go do serwera. Możesz wzorować się na kodzie metody send_player która znajduję się w tej samej klasie
 
