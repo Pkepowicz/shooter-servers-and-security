@@ -30,7 +30,10 @@ class Network:
 
     def send_player(self, game_object: Player):
         try:
-            self.socket.send(self.encryptor.encrypt(pickle.dumps(game_object)))
+            if self.encrypted:
+                self.socket.send(self.encryptor.encrypt(pickle.dumps(game_object)))
+            else:
+                self.socket.send(pickle.dumps(game_object))
             try:
                 if self.encrypted:
                     return pickle.loads(self.encryptor.decrypt(self.socket.recv(2048)))
