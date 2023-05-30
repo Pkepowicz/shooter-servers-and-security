@@ -13,7 +13,8 @@ class Network:
         self.port = SERVER_PORT
         self.address = (self.server, self.port)
         self.encryptor = Encryptor("mypassword")
-        self.encrypted = True
+        self.encrypted = False
+        # self.p = self.connect()
 
     def connect(self):
         try:
@@ -28,7 +29,10 @@ class Network:
 
     def send_player(self, game_object: Player):
         try:
-            self.socket.send(self.encryptor.encrypt(pickle.dumps(game_object)))
+            if self.encrypted:
+                self.socket.send(self.encryptor.encrypt(pickle.dumps(game_object)))
+            else:
+                self.socket.send(pickle.dumps(game_object))
             try:
                 if self.encrypted:
                     return pickle.loads(self.encryptor.decrypt(self.socket.recv(2048)))
