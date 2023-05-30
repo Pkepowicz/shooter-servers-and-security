@@ -15,7 +15,7 @@ class Server:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.encryptor = Encryptor("mypassword")
-        self.encrypted = True
+        self.encrypted = False
 
         if self.bind_socket():
             self.run_server()
