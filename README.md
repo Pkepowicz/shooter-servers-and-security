@@ -15,5 +15,11 @@ Powinna zwrócić true jeśli oba koła się nakładają i false w każdym innym
 ## Zad3
 W projekcie brakuję grafik dla graczy i pocisków. W konstruktorze klasy Client dodaj pola player_sprite i projectile_sprite do których za pomocą biblioteki pygame wczytasz odpowiednie pliki z rozszerzeniem .png. Pamiętaj o ich przeskalowaniu! Możesz skorzystać z plików w folderze assets, ale zachęcamy do kreatywności. Po wczytaniu obrazów wyszukaj w klasie Client miejsca w których wywoływana jest metoda draw na obiektach Player i Projectile i przekaż do nich odpowiednie pola.
 
+## Zad 4
+Napisz funkcję szyfrującą plik tekstowy algorytmem AES w trybie ECB
+
+## Zad 5
+Napisz funkcję która wczyta i odszyfruje plik algorytmem AES w trybie ECB
+
 ## ZADANIE DODATKOWE 
 Spróbuj połączyć się ze z inną osobą na sali :)
