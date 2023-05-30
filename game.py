@@ -14,7 +14,7 @@ class Game:
 
     def join_new_player(self):
         player_id = len(self.players)
-        player = Player(player_id, 25, 25, 20)
+        player = Player(player_id, 25, 25, 25)
         self.players.append(player)
 
     def update_player(self, player):

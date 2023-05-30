@@ -5,13 +5,14 @@ import pickle
 from game import Game
 from projectile import Projectile
 from encryptor import Encryptor
+from constants import SERVER_ADDRESS, SERVER_PORT
 
 
 class Server:
     def __init__(self):
         self.games = []
-        self.server_ip_address = "127.0.1.1"  # "127.0.1.1"
-        self.port = 5555
+        self.server_ip_address = SERVER_ADDRESS
+        self.port = SERVER_PORT
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         self.encryptor = Encryptor("mypassword")

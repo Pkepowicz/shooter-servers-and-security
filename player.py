@@ -1,8 +1,7 @@
 import pygame
 import math
 from projectile import Projectile
-
-
+from constants import WIDTH, HEIGHT, PLAYER_SPEED
 class Player:
     def __init__(self, id, x, y, radius, color=(0, 0, 255)):
         self.id = id
@@ -10,29 +9,29 @@ class Player:
         self.y = y
         self.radius = radius
         self.color = color
-        self.vel = 3
+        self.speed = PLAYER_SPEED
         self.alive = True
         self.health = 100
 
     def draw(self, win, sprite):
-        win.blit(sprite, (self.x-25, self.y-25))
+        win.blit(sprite, (self.x - self.radius/2, self.y - self.radius))
 
     def update(self, keys):
         if keys[pygame.K_LEFT]:
             if self.x > 1:
-                self.x -= self.vel
+                self.x -= self.speed
 
         if keys[pygame.K_RIGHT]:
-            if self.x < 499:
-                self.x += self.vel
+            if self.x < WIDTH - 1:
+                self.x += self.speed
 
         if keys[pygame.K_UP]:
             if self.y > 1:
-                self.y -= self.vel
+                self.y -= self.speed
 
         if keys[pygame.K_DOWN]:
-            if self.y < 499:
-                self.y += self.vel
+            if self.y < HEIGHT - 1:
+                self.y += self.speed
 
     def shoot(self, mouse_x, mouse_y):
         angle = self.calculate_angle(self.x, self.y, mouse_x, mouse_y)

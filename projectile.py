@@ -1,9 +1,5 @@
-import pygame
 import math
-
-MAX_RANGE = 200
-SPEED = 5
-DAMAGE = 10
+from constants import WIDTH, HEIGHT, PROJECTILE_RADIUS, PROJECTILE_MAX_RANGE, PROJECTILE_SPEED, PROJECTILE_DAMAGE
 
 
 class Projectile:
@@ -11,11 +7,11 @@ class Projectile:
         self.id = None
         self.x = x
         self.y = y
-        self.speed = SPEED
+        self.speed = PROJECTILE_SPEED
         self.change_x = -math.sin(angle - math.pi / 2) * self.speed
         self.change_y = math.cos(angle - math.pi / 2) * self.speed
-        self.damage = DAMAGE
-        self.radius = 7
+        self.damage = PROJECTILE_DAMAGE
+        self.radius = PROJECTILE_RADIUS
         self.distance = 0
         self.active = True
         self.known = 1
@@ -29,12 +25,12 @@ class Projectile:
         self.distance += self.speed
         if not self.check_bounds():
             self.active = False
-        if self.distance > MAX_RANGE:
+        if self.distance > PROJECTILE_MAX_RANGE:
             self.active = False
 
     def check_bounds(self):
-        if self.x < 1 or self.x > 499:
+        if self.x < 1 or self.x > WIDTH - 1:
             return False
-        if self.y < 1 or self.y > 499:
+        if self.y < 1 or self.y > HEIGHT - 1:
             return False
         return True
