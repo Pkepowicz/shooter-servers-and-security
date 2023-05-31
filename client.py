@@ -17,10 +17,8 @@ class Client:
         self.players = {}
         self.projectiles = set()
         self.background = pygame.image.load("assets/background.jpg")
-        self.player_sprite = pygame.transform.scale(pygame.image.load("assets/player.png"),
-                                                    (PLAYER_RADIUS * 2, PLAYER_RADIUS * 2))
-        self.projectile_sprite = pygame.transform.scale(pygame.image.load("assets/projectile.png"),
-                                                        (PROJECTILE_RADIUS * 2, PROJECTILE_RADIUS * 2))
+        #self.player_sprite
+        #self.projectile_sprite
 
     def setup_players(self):
         self.local_player = self.network_client.connect()
@@ -35,12 +33,12 @@ class Client:
         self.window.blit(self.background, (0,0))
         for player in self.players.copy().values():
             if player.alive:
-                player.draw(self.window, self.player_sprite)
+                player.draw(self.window)        # ADD CODE HERE
             else:
                 del self.players[player.id]
         for projectile in self.projectiles.copy():
             if projectile.active:
-                projectile.draw(self.window, self.projectile_sprite)
+                projectile.draw(self.window)    # ADD CODE HERE
             else:
                 self.projectiles.remove(projectile)
         text_surface = self.font.render(str(self.local_player.health), True, (0, 0, 0))
@@ -85,9 +83,8 @@ class Client:
                     player.take_damage()
 
     def check_circle_overlap(self, pos1, radius1, pos2, radius2):
-        distance_squared = (pos1[0] - pos2[0]) ** 2 + (pos1[1] - pos2[1]) ** 2
-        radi_squared = (radius1 + radius2) ** 2
-        return distance_squared <= radi_squared
+        # write code here
+        pass
 
     def main_menu(self):
         while True:

@@ -44,10 +44,6 @@ class Network:
             print(se)
 
     def send_projectile(self, game_object: Projectile):
-        try:
-            if self.encrypted:
-                self.socket.send(self.encryptor.encrypt(pickle.dumps(game_object)))
-            else:
-                self.socket.send(pickle.dumps(game_object))
-        except socket.error as se:
-            print(se)
+        # write code here
+        pass
+
