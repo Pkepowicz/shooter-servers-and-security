@@ -12,7 +12,7 @@ Po pobraniu projektu zainstaluj moduły podane w requirements.txt. Do sprawdzeni
 ![plot](./guide/guide5.png)
 
 ## Wstęp do zadań
-Żeby uruchomić aplikacje najpierw uruchom serwer, a dopiero później clienta. Na początku nie wszystko będzie działać, a nawet pojawią się błędy które trzeba naprawić wykonując poniższe zadania. Powodzenia!
+Aby uruchomić aplikację, należy najpierw uruchomić server, a dopiero potem clienta. Na początku nie wszystko będzie działać poprawnie, mogą pojawić się także błędy, które będą wymagały naprawy. Aby rozwiązać te problemy, wykonaj poniższe zadania. Powodzenia!
 
 ## Zad 1
 W projekcie brakuję grafik dla graczy i pocisków. W konstruktorze klasy Client dodaj pola player_sprite i projectile_sprite do których za pomocą biblioteki pygame wczytasz odpowiednie pliki z rozszerzeniem .png. Pamiętaj o ich przeskalowaniu! Możesz skorzystać z plików w folderze assets, ale zachęcamy do kreatywności. Po wczytaniu obrazów wyszukaj w klasie Client miejsca w których wywoływana jest metoda draw na obiektach Player i Projectile i przekaż do nich utworzone pola.
