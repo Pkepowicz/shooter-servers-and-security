@@ -1,5 +1,5 @@
 from player import Player
-
+from constants import PLAYER_RADIUS
 
 class Game:
     def __init__(self, game_id, max_players=2):
@@ -14,7 +14,7 @@ class Game:
 
     def join_new_player(self):
         player_id = len(self.players)
-        player = Player(player_id, 25, 25, 20)
+        player = Player(player_id, 25, 25, PLAYER_RADIUS)
         self.players.append(player)
 
     def update_player(self, player):

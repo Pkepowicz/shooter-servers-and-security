@@ -2,13 +2,13 @@ import pygame
 from network import Network
 from player import Player
 from button import Button
-
+from constants import WIDTH, HEIGHT, PLAYER_RADIUS, PROJECTILE_RADIUS
 
 class Client:
     def __init__(self):
         pygame.init()
-        self.width = 500
-        self.height = 500
+        self.width = WIDTH
+        self.height = HEIGHT
         self.window = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption("Client")
         self.font = pygame.font.SysFont("Arial", 20)
@@ -17,8 +17,10 @@ class Client:
         self.players = {}
         self.projectiles = set()
         self.background = pygame.image.load("assets/background.jpg")
-        self.player_sprite = pygame.transform.scale(pygame.image.load("assets/player.png"), (50, 50))
-        self.projectile_sprite = pygame.transform.scale(pygame.image.load("assets/projectile.png"), (14, 14))
+        self.player_sprite = pygame.transform.scale(pygame.image.load("assets/player.png"),
+                                                    (PLAYER_RADIUS * 2, PLAYER_RADIUS * 2))
+        self.projectile_sprite = pygame.transform.scale(pygame.image.load("assets/projectile.png"),
+                                                        (PROJECTILE_RADIUS * 2, PROJECTILE_RADIUS * 2))
 
     def setup_players(self):
         self.local_player = self.network_client.connect()
@@ -27,7 +29,7 @@ class Client:
             if i == self.local_player.id:
                 self.players[i] = self.local_player
             else:
-                self.players[i] = Player(i, 25, 25, 20)
+                self.players[i] = Player(i, 25, 25, PLAYER_RADIUS)
 
     def redraw_window(self):
         self.window.blit(self.background, (0,0))
