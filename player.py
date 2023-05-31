@@ -2,6 +2,8 @@ import pygame
 import math
 from projectile import Projectile
 from constants import WIDTH, HEIGHT, PLAYER_SPEED
+
+
 class Player:
     def __init__(self, id, x, y, radius, color=(0, 0, 255)):
         self.id = id
